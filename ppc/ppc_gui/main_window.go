@@ -1,10 +1,12 @@
 package ppc_gui
 
 import (
+	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"image/color"
@@ -82,8 +84,53 @@ func NewFooter() fyne.Container {
 }
 
 func NewHomeContent() fyne.Container {
-	content := container.NewCenter(canvas.NewText("content", color.White))
-	return *content
+	homeHeaderText := "Welcome to the Pen&Paper Agent, this application supports people in playing Pen&Paper games"
+	homeHeader := widget.NewLabel(homeHeaderText)
+	homeHeader.Wrapping = fyne.TextWrapWord // optional: ensures word wrapping
+	homeHeader.Alignment = fyne.TextAlignCenter
+
+	homeHeaderContent := container.New(layout.NewVBoxLayout(), homeHeader)
+
+	introductionText := "This agent allows to create character sheets with dynamic content that can be customized" +
+		"and saved for further use. Every single character sheet can be derived from a template which can be reused." +
+		" For final usage, the filled character template can be exported and then printed to be used in a party." +
+		" All templates are stored as xml files."
+	introductionLabel := widget.NewLabel(introductionText)
+	introductionLabel.Wrapping = fyne.TextWrapWord
+	introductionLabel.Alignment = fyne.TextAlignCenter
+
+	intInput := NewNumericalEntry()
+	intInput.SetPlaceHolder("Intelligence")
+
+	strInput := NewNumericalEntry()
+	strInput.SetPlaceHolder("Strength")
+
+	agiInput := NewNumericalEntry()
+	agiInput.SetPlaceHolder("Agility")
+
+	staInput := NewNumericalEntry()
+	staInput.SetPlaceHolder("Stamina")
+	sampleInput := container.New(
+		layout.NewGridLayout(3),
+		intInput,
+		strInput,
+		agiInput,
+		staInput,
+	)
+	fmt.Println(sampleInput)
+	// sampleInput := container.New(layout.NewCenterLayout(), inputs)
+	sampleAttribute := NewNumericalAttribute("Sample Attribute 1", 1)
+	sampleAttribute2 := NewNumericalAttribute("Sample Attribute 2", 2)
+
+	homeContent := container.NewVBox(
+		homeHeaderContent,
+		widget.NewSeparator(),
+		introductionLabel,
+		sampleAttribute.CreateContainer(),
+		sampleAttribute2.CreateContainer(),
+	)
+	// content := container.NewCenter(homeContent)
+	return *homeContent
 }
 
 func NewPPWizard() PPWizard {

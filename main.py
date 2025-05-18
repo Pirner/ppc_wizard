@@ -14,7 +14,8 @@ def main():
     <stamina>
     <intelligence>
     <charisma>
-
+    also provide 3 items within the xml tags:
+    <gear>
     The question: {question}
     """
     prompt = ChatPromptTemplate.from_template(template)
