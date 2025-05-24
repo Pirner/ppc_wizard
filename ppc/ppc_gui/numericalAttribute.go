@@ -4,15 +4,17 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	"strconv"
 )
 
 type NumericalAttribute struct {
-	value          int
-	labelWidget    *widget.Label
-	input          *NumericalEntry
-	placeholder    *widget.Label
-	placeholderSep *widget.Label
+	value           *int
+	labelWidget     *widget.Label
+	input           *NumericalEntry
+	buttonContainer *fyne.Container
+	removeButton    *widget.Button
 }
 
 func (na *NumericalAttribute) CreateContainer() *fyne.Container {
@@ -20,8 +22,8 @@ func (na *NumericalAttribute) CreateContainer() *fyne.Container {
 		layout.NewGridLayout(4),
 		na.labelWidget,
 		na.input,
-		na.placeholder,
-		na.placeholderSep,
+		na.buttonContainer,
+		container.NewCenter(na.removeButton),
 	)
 	return sampleInput
 }
@@ -30,15 +32,32 @@ func NewNumericalAttribute(attributeName string, defaultValue int) *NumericalAtt
 	attributeWidget := widget.NewLabel(attributeName)
 	intInput := NewNumericalEntry()
 	intInput.SetPlaceHolder(attributeName)
-	sampleWidget1 := widget.NewLabel("1")
-	sampleWidget2 := widget.NewLabel("2")
+	intInput.SetText(strconv.Itoa(defaultValue))
+	// create up and down button
+	upButton := widget.NewButtonWithIcon("", theme.MoveUpIcon(), func() {
+		// Handle New action
+		defaultValue++
+		intInput.SetText(strconv.Itoa(defaultValue))
+	})
+	doButton := widget.NewButtonWithIcon("", theme.MoveDownIcon(), func() {
+		// Handle New action
+		defaultValue--
+		intInput.SetText(strconv.Itoa(defaultValue))
+	})
+
+	removeButton := widget.NewButtonWithIcon("", theme.ContentClearIcon(), func() {
+		println("remove this attribute")
+	})
+
+	buttons := container.NewHBox(upButton, doButton)
+	buttonContainer := container.NewCenter(buttons)
 
 	attributeComponent := &NumericalAttribute{}
-	attributeComponent.value = defaultValue
+	attributeComponent.value = &defaultValue
 	attributeComponent.labelWidget = attributeWidget
 	attributeComponent.input = intInput
-	attributeComponent.placeholder = sampleWidget1
-	attributeComponent.placeholderSep = sampleWidget2
+	attributeComponent.buttonContainer = buttonContainer
+	attributeComponent.removeButton = removeButton
 
 	return attributeComponent
 }

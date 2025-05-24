@@ -1,13 +1,11 @@
 package ppc_gui
 
 import (
-	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
-	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"image/color"
 	"io/ioutil"
@@ -15,11 +13,12 @@ import (
 )
 
 type PPWizard struct {
-	MyApp    fyne.App
-	MyWindow fyne.Window
-	Sidebar  fyne.Container
-	Header   fyne.Container
-	Footer   fyne.Container
+	MyApp       fyne.App
+	MyWindow    fyne.Window
+	Sidebar     Sidebar
+	Header      fyne.Container
+	Footer      fyne.Container
+	mainContent fyne.Container
 }
 
 func LoadResourceFromPath(path string) (fyne.Resource, error) {
@@ -30,35 +29,6 @@ func LoadResourceFromPath(path string) (fyne.Resource, error) {
 	name := filepath.Base(path)
 	staticRes := fyne.StaticResource{StaticName: name, StaticContent: bytes}
 	return &staticRes, nil
-}
-
-func NewSidebar() fyne.Container {
-	homeBtn := widget.NewButtonWithIcon("", theme.HomeIcon(), func() {
-		// Handle New action
-		println("Home clicked")
-	})
-
-	openBtn := widget.NewButtonWithIcon("", theme.FolderOpenIcon(), func() {
-		// Handle Open action
-		println("Open clicked")
-	})
-
-	saveBtn := widget.NewButtonWithIcon("", theme.DocumentSaveIcon(), func() {
-		// Handle Save action
-		println("Save clicked")
-	})
-
-	vboxSidebar := container.NewVBox(
-		homeBtn,
-		widget.NewSeparator(),
-		openBtn,
-		widget.NewSeparator(),
-		saveBtn,
-	)
-	separator := canvas.NewLine(color.Gray{Y: 80})
-	separator.StrokeWidth = 1
-	sidebar := container.NewHBox(vboxSidebar, separator)
-	return *sidebar
 }
 
 func NewHeader() fyne.Container {
@@ -83,7 +53,7 @@ func NewFooter() fyne.Container {
 	return *footer
 }
 
-func NewHomeContent() fyne.Container {
+func NewHomeContent() *fyne.Container {
 	homeHeaderText := "Welcome to the Pen&Paper Agent, this application supports people in playing Pen&Paper games"
 	homeHeader := widget.NewLabel(homeHeaderText)
 	homeHeader.Wrapping = fyne.TextWrapWord // optional: ensures word wrapping
@@ -99,28 +69,9 @@ func NewHomeContent() fyne.Container {
 	introductionLabel.Wrapping = fyne.TextWrapWord
 	introductionLabel.Alignment = fyne.TextAlignCenter
 
-	intInput := NewNumericalEntry()
-	intInput.SetPlaceHolder("Intelligence")
-
-	strInput := NewNumericalEntry()
-	strInput.SetPlaceHolder("Strength")
-
-	agiInput := NewNumericalEntry()
-	agiInput.SetPlaceHolder("Agility")
-
-	staInput := NewNumericalEntry()
-	staInput.SetPlaceHolder("Stamina")
-	sampleInput := container.New(
-		layout.NewGridLayout(3),
-		intInput,
-		strInput,
-		agiInput,
-		staInput,
-	)
-	fmt.Println(sampleInput)
-	// sampleInput := container.New(layout.NewCenterLayout(), inputs)
-	sampleAttribute := NewNumericalAttribute("Sample Attribute 1", 1)
-	sampleAttribute2 := NewNumericalAttribute("Sample Attribute 2", 2)
+	sampleAttribute := NewNumericalAttribute("Intelligence", 14)
+	sampleAttribute2 := NewNumericalAttribute("Stamina", 12)
+	sampleAttribute3 := NewNumericalAttribute("Charisma", 12)
 
 	homeContent := container.NewVBox(
 		homeHeaderContent,
@@ -128,10 +79,23 @@ func NewHomeContent() fyne.Container {
 		introductionLabel,
 		sampleAttribute.CreateContainer(),
 		sampleAttribute2.CreateContainer(),
+		sampleAttribute3.CreateContainer(),
 	)
-	// content := container.NewCenter(homeContent)
-	return *homeContent
+	// content := container.NewCenter(mainContent)
+	return homeContent
 }
+
+//func (ppw *PPWizard) UpdateMainContent(newContent fyne.Container) {
+//	ppw.mainContent = newContent
+//	content := container.NewBorder(
+//		&ppw.Header,
+//		&ppw.Footer,
+//		&ppw.Sidebar,
+//		nil,
+//		&ppw.mainContent,
+//	)
+//	ppw.MyWindow.SetContent(content)
+//}
 
 func NewPPWizard() PPWizard {
 	ppcwApp := app.New()
@@ -141,20 +105,25 @@ func NewPPWizard() PPWizard {
 	r, _ := LoadResourceFromPath("../ressources/icon.png")
 	ppcwMainW.SetIcon(r)
 
-	sidebar := NewSidebar()
 	header := NewHeader()
-	homeContent := NewHomeContent()
+	mainContent := NewHomeContent()
 	footer := NewFooter()
+	sidebar := NewSidebar(mainContent)
 
-	content := container.NewBorder(&header, &footer, &sidebar, nil, &homeContent)
+	content := container.NewBorder(&header, &footer, sidebar.CreateContainer(), nil, mainContent)
 	ppcwMainW.SetContent(content)
+
+	//mainContent = *container.NewVBox(widget.NewLabel("something"))
+	//mainContent.Refresh()
+	sidebar.ChangeMainContent()
 
 	ppwiz := PPWizard{
 		ppcwApp,
 		ppcwMainW,
-		sidebar,
+		*sidebar,
 		header,
 		footer,
+		*mainContent,
 	}
 	return ppwiz
 }
