@@ -15,6 +15,7 @@ type Sidebar struct {
 	openBtn     *widget.Button
 	saveBtn     *widget.Button
 	mainContent *fyne.Container
+	activeCSH   *CharacterSheet
 }
 
 func (sb *Sidebar) CreateContainer() *fyne.Container {
@@ -36,21 +37,23 @@ func (sb *Sidebar) CreateContainer() *fyne.Container {
 func (sb *Sidebar) ChangeMainContent() {
 	// sb.mainContent = container.NewVBox(widget.NewLabel("some text"))
 	// sb.mainContent.Refresh()
-
-	sb.mainContent.Objects = []fyne.CanvasObject{
-		widget.NewLabel("New Content"),
-		widget.NewButton("Another Button and I have changed it", nil),
-	}
-	sb.mainContent.Refresh()
 }
 
-func NewSidebar(mainContent *fyne.Container) *Sidebar {
+func NewSidebar(mainContent *fyne.Container, activeCSH CharacterSheet) *Sidebar {
 	homeBtn := widget.NewButtonWithIcon("", theme.HomeIcon(), func() {
-		// Handle New action
+		// Handle Home action
+		mainContent.Objects = NewHomeContent().Objects
 		println("Home clicked")
 	})
 	createNewBtn := widget.NewButtonWithIcon("", theme.ContentAddIcon(), func() {
 		// Handle Open action
+		mainContent.Objects = []fyne.CanvasObject{
+			widget.NewLabel("New Content"),
+			widget.NewButton("Another Button and I have changed it", nil),
+		}
+		csh := NewCharacterSheet(mainContent)
+		mainContent.Objects = csh.CreateContainer().Objects
+		mainContent.Refresh()
 		println("Create new clicked")
 	})
 	openBtn := widget.NewButtonWithIcon("", theme.FolderOpenIcon(), func() {
@@ -67,6 +70,7 @@ func NewSidebar(mainContent *fyne.Container) *Sidebar {
 		openBtn,
 		saveBtn,
 		mainContent,
+		&activeCSH,
 	}
 	return &sidebar
 }

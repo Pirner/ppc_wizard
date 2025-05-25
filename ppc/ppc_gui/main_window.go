@@ -19,6 +19,7 @@ type PPWizard struct {
 	Header      fyne.Container
 	Footer      fyne.Container
 	mainContent fyne.Container
+	activeCSH   CharacterSheet
 }
 
 func LoadResourceFromPath(path string) (fyne.Resource, error) {
@@ -108,7 +109,9 @@ func NewPPWizard() PPWizard {
 	header := NewHeader()
 	mainContent := NewHomeContent()
 	footer := NewFooter()
-	sidebar := NewSidebar(mainContent)
+
+	activeCSH := NewCharacterSheet(mainContent)
+	sidebar := NewSidebar(mainContent, activeCSH)
 
 	content := container.NewBorder(&header, &footer, sidebar.CreateContainer(), nil, mainContent)
 	ppcwMainW.SetContent(content)
@@ -124,6 +127,7 @@ func NewPPWizard() PPWizard {
 		header,
 		footer,
 		*mainContent,
+		activeCSH,
 	}
 	return ppwiz
 }
