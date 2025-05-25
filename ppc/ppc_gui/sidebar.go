@@ -46,13 +46,21 @@ func NewSidebar(mainContent *fyne.Container, activeCSH CharacterSheet) *Sidebar 
 		println("Home clicked")
 	})
 	createNewBtn := widget.NewButtonWithIcon("", theme.ContentAddIcon(), func() {
-		// Handle Open action
-		mainContent.Objects = []fyne.CanvasObject{
-			widget.NewLabel("New Content"),
-			widget.NewButton("Another Button and I have changed it", nil),
-		}
+		// Handle New action
 		csh := NewCharacterSheet(mainContent)
-		mainContent.Objects = csh.CreateContainer().Objects
+		csh.CreateContainer()
+		addNewFieldButton := widget.NewButtonWithIcon("", theme.ContentAddIcon(), func() {
+			// Handle Home action
+			csh.AddField()
+			println("Add Field")
+		})
+		content := container.NewVBox(
+			csh.CreateContainer(),
+			widget.NewSeparator(),
+			container.NewCenter(addNewFieldButton),
+		)
+		// mainContent.Objects = csh.CreateContainer().Objects
+		mainContent.Objects = content.Objects
 		mainContent.Refresh()
 		println("Create new clicked")
 	})
