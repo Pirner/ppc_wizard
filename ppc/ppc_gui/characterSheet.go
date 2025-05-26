@@ -39,13 +39,16 @@ func (csh CharacterSheet) RefreshMainContent() {
 		csh.AddField()
 		println("Add Field")
 	})
+	scrollContent := container.NewScroll(csh.CreateContainer())
+	scrollContent.SetMinSize(fyne.NewSize(400, 600))
 	content := container.NewVBox(
 		csh.CreateContainer(),
 		widget.NewSeparator(),
 		container.NewCenter(addNewFieldButton),
 	)
-	// mainContent.Objects = csh.CreateContainer().Objects
-	csh.mainContainer.Objects = content.Objects
+	maxContent := container.NewVBox(content)
+
+	csh.mainContainer.Objects = []fyne.CanvasObject{maxContent}
 	csh.mainContainer.Refresh()
 }
 

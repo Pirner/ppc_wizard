@@ -34,11 +34,6 @@ func (sb *Sidebar) CreateContainer() *fyne.Container {
 	return sidebarContainer
 }
 
-func (sb *Sidebar) ChangeMainContent() {
-	// sb.mainContent = container.NewVBox(widget.NewLabel("some text"))
-	// sb.mainContent.Refresh()
-}
-
 func NewSidebar(mainContent *fyne.Container, activeCSH CharacterSheet) *Sidebar {
 	homeBtn := widget.NewButtonWithIcon("", theme.HomeIcon(), func() {
 		// Handle Home action
@@ -48,19 +43,21 @@ func NewSidebar(mainContent *fyne.Container, activeCSH CharacterSheet) *Sidebar 
 	createNewBtn := widget.NewButtonWithIcon("", theme.ContentAddIcon(), func() {
 		// Handle New action
 		csh := NewCharacterSheet(mainContent)
-		csh.CreateContainer()
 		addNewFieldButton := widget.NewButtonWithIcon("", theme.ContentAddIcon(), func() {
 			// Handle Home action
 			csh.AddField()
 			println("Add Field")
 		})
+
+		// scrollContent := container.NewScroll(csh.CreateContainer())
+		// scrollContent.SetMinSize(fyne.NewSize(400, 600))
 		content := container.NewVBox(
 			csh.CreateContainer(),
 			widget.NewSeparator(),
 			container.NewCenter(addNewFieldButton),
 		)
-		// mainContent.Objects = csh.CreateContainer().Objects
-		mainContent.Objects = content.Objects
+
+		mainContent.Objects = []fyne.CanvasObject{content}
 		mainContent.Refresh()
 		println("Create new clicked")
 	})

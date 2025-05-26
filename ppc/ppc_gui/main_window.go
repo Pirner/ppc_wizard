@@ -107,18 +107,15 @@ func NewPPWizard() PPWizard {
 	ppcwMainW.SetIcon(r)
 
 	header := NewHeader()
-	mainContent := NewHomeContent()
+	homeContent := NewHomeContent()
 	footer := NewFooter()
 
+	mainContent := container.NewMax(homeContent)
 	activeCSH := NewCharacterSheet(mainContent)
 	sidebar := NewSidebar(mainContent, activeCSH)
 
 	content := container.NewBorder(&header, &footer, sidebar.CreateContainer(), nil, mainContent)
 	ppcwMainW.SetContent(content)
-
-	//mainContent = *container.NewVBox(widget.NewLabel("something"))
-	//mainContent.Refresh()
-	sidebar.ChangeMainContent()
 
 	ppwiz := PPWizard{
 		ppcwApp,
