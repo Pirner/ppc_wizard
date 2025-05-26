@@ -6,13 +6,14 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	ppc_gui2 "ppc_wizard/ppc/ppc_gui/fieldEntries"
 	"strconv"
 )
 
 type NumericalAttribute struct {
 	value           *int
 	labelWidget     *widget.Label
-	input           *NumericalEntry
+	input           *ppc_gui2.NumericalEntry
 	buttonContainer *fyne.Container
 	removeButton    *widget.Button
 }
@@ -30,7 +31,7 @@ func (na *NumericalAttribute) CreateContainer() *fyne.Container {
 
 func NewNumericalAttribute(attributeName string, defaultValue int) *NumericalAttribute {
 	attributeWidget := widget.NewLabel(attributeName)
-	intInput := NewNumericalEntry()
+	intInput := ppc_gui2.NewNumericalEntry()
 	intInput.SetPlaceHolder(attributeName)
 	intInput.SetText(strconv.Itoa(defaultValue))
 	// create up and down button

@@ -34,7 +34,7 @@ func (sb *Sidebar) CreateContainer() *fyne.Container {
 	return sidebarContainer
 }
 
-func NewSidebar(mainContent *fyne.Container, activeCSH CharacterSheet) *Sidebar {
+func NewSidebar(mainContent *fyne.Container, activeCSH CharacterSheet, a fyne.App) *Sidebar {
 	homeBtn := widget.NewButtonWithIcon("", theme.HomeIcon(), func() {
 		// Handle Home action
 		mainContent.Objects = NewHomeContent().Objects
@@ -42,7 +42,7 @@ func NewSidebar(mainContent *fyne.Container, activeCSH CharacterSheet) *Sidebar 
 	})
 	createNewBtn := widget.NewButtonWithIcon("", theme.ContentAddIcon(), func() {
 		// Handle New action
-		csh := NewCharacterSheet(mainContent)
+		csh := NewCharacterSheet(mainContent, a)
 		// Create the field container once
 		fieldsContainer := csh.CreateContainer()
 

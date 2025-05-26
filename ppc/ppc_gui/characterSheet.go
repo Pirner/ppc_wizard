@@ -5,21 +5,24 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	ppcgui "ppc_wizard/ppc/ppc_gui/fieldEntries"
 )
 
 type CharacterSheet struct {
+	mainApp               fyne.App
 	mainContainer         *fyne.Container
 	addNewAttributeButton *widget.Button
 	numericalAttributes   []NumericalAttribute
 }
 
-func NewCharacterSheet(mainContainer *fyne.Container) CharacterSheet {
+func NewCharacterSheet(mainContainer *fyne.Container, a fyne.App) CharacterSheet {
 	addAttributeButton := widget.NewButtonWithIcon("", theme.ContentAddIcon(), func() {
 		// Handle Home action
 		println("Add Attribute")
 	})
 	var numericAttributes []NumericalAttribute
 	csh := CharacterSheet{
+		a,
 		mainContainer,
 		addAttributeButton,
 		numericAttributes,
@@ -28,6 +31,37 @@ func NewCharacterSheet(mainContainer *fyne.Container) CharacterSheet {
 }
 
 func (csh CharacterSheet) AddField() {
+	// create a new window and ask for what attribute to create
+	entryWindow := csh.mainApp.NewWindow("Enter Values")
+	entryWindow.Resize(fyne.NewSize(400, 300))
+	headerLabel := widget.NewLabel("Create New Field")
+
+	// Dropdown items
+	options := []string{"NumericalAttribute", "Not Implemented"}
+
+	// Create dropdown (select) widget
+	selectWidget := widget.NewSelect(options, func(selected string) {
+		// Callback when selection changes
+		println("Selected:", selected)
+		if selected == options[0] {
+			entryContent := ppcgui.NewNumericalFieldEntry()
+
+			content := container.NewVBox(
+				container.NewCenter(headerLabel),
+				entryContent.CreateContainer(),
+			)
+			entryWindow.SetContent(content)
+			entryWindow.Show()
+		}
+	})
+	selectWidget.PlaceHolder = "Choose an option"
+
+	content := container.NewVBox(
+		container.NewCenter(headerLabel),
+		selectWidget,
+	)
+	entryWindow.SetContent(content)
+	entryWindow.Show()
 	numAttribute := NewNumericalAttribute("Intelligence", 15)
 	csh.numericalAttributes = append(csh.numericalAttributes, *numAttribute)
 	csh.RefreshMainContent()

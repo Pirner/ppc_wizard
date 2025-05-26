@@ -111,8 +111,8 @@ func NewPPWizard() PPWizard {
 	footer := NewFooter()
 
 	mainContent := container.NewMax(homeContent)
-	activeCSH := NewCharacterSheet(mainContent)
-	sidebar := NewSidebar(mainContent, activeCSH)
+	activeCSH := NewCharacterSheet(mainContent, ppcwApp)
+	sidebar := NewSidebar(mainContent, activeCSH, ppcwApp)
 
 	content := container.NewBorder(&header, &footer, sidebar.CreateContainer(), nil, mainContent)
 	ppcwMainW.SetContent(content)
