@@ -43,18 +43,22 @@ func NewSidebar(mainContent *fyne.Container, activeCSH CharacterSheet) *Sidebar 
 	createNewBtn := widget.NewButtonWithIcon("", theme.ContentAddIcon(), func() {
 		// Handle New action
 		csh := NewCharacterSheet(mainContent)
+		// Create the field container once
+		fieldsContainer := csh.CreateContainer()
+
+		// Button to add a new field
 		addNewFieldButton := widget.NewButtonWithIcon("", theme.ContentAddIcon(), func() {
-			// Handle Home action
 			csh.AddField()
+			fieldsContainer.Refresh() // Refresh the UI
 			println("Add Field")
 		})
 
-		// scrollContent := container.NewScroll(csh.CreateContainer())
-		// scrollContent.SetMinSize(fyne.NewSize(400, 600))
-		content := container.NewVBox(
-			csh.CreateContainer(),
-			widget.NewSeparator(),
-			container.NewCenter(addNewFieldButton),
+		// Make the fields scrollable
+		scrollContent := container.NewScroll(fieldsContainer)
+		content := container.NewBorder(nil,
+			container.NewVBox(widget.NewSeparator(), container.NewCenter(addNewFieldButton)),
+			nil, nil,
+			scrollContent,
 		)
 
 		mainContent.Objects = []fyne.CanvasObject{content}

@@ -34,21 +34,26 @@ func (csh CharacterSheet) AddField() {
 }
 
 func (csh CharacterSheet) RefreshMainContent() {
+	// Create the field container once
+	fieldsContainer := csh.CreateContainer()
+
+	// Button to add a new field
 	addNewFieldButton := widget.NewButtonWithIcon("", theme.ContentAddIcon(), func() {
-		// Handle Home action
 		csh.AddField()
+		fieldsContainer.Refresh() // Refresh the UI
 		println("Add Field")
 	})
-	scrollContent := container.NewScroll(csh.CreateContainer())
-	scrollContent.SetMinSize(fyne.NewSize(400, 600))
-	content := container.NewVBox(
-		csh.CreateContainer(),
-		widget.NewSeparator(),
-		container.NewCenter(addNewFieldButton),
-	)
-	maxContent := container.NewVBox(content)
 
-	csh.mainContainer.Objects = []fyne.CanvasObject{maxContent}
+	// Make the fields scrollable
+	scrollContent := container.NewScroll(fieldsContainer)
+	content := container.NewBorder(nil,
+		container.NewVBox(widget.NewSeparator(), container.NewCenter(addNewFieldButton)),
+		nil, nil,
+		scrollContent,
+	)
+
+	// Replace main container content
+	csh.mainContainer.Objects = []fyne.CanvasObject{content}
 	csh.mainContainer.Refresh()
 }
 
