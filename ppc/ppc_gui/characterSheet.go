@@ -1,11 +1,13 @@
 package ppc_gui
 
 import (
+	ppcgui "ppc_wizard/ppc/ppc_gui/fieldEntries"
+	"strconv"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	ppcgui "ppc_wizard/ppc/ppc_gui/fieldEntries"
 )
 
 type CharacterSheet struct {
@@ -46,24 +48,48 @@ func (csh CharacterSheet) AddField() {
 		if selected == options[0] {
 			entryContent := ppcgui.NewNumericalFieldEntry()
 
-			content := container.NewVBox(
+			numericalEntryForm := container.NewVBox(
 				container.NewCenter(headerLabel),
 				entryContent.CreateContainer(),
 			)
-			entryWindow.SetContent(content)
+			approveButton := widget.NewButtonWithIcon("", theme.ConfirmIcon(), func() {
+				// Handle New action
+				val, _ := strconv.Atoi(entryContent.ValueEntry.Text)
+				numAttribute := NewNumericalAttribute(
+					entryContent.NameEntry.Text,
+					val,
+				)
+				csh.numericalAttributes = append(csh.numericalAttributes, *numAttribute)
+				csh.RefreshMainContent()
+				entryWindow.Close()
+				println("Approve")
+			})
+			exitButton := widget.NewButtonWithIcon("", theme.ContentClearIcon(), func() {
+				// Handle New action
+				entryWindow.Close()
+				println("Exit")
+			})
+
+			bottomContent := container.NewHBox(
+				exitButton,
+				approveButton,
+			)
+			numericalContent := container.NewBorder(nil, bottomContent, nil, nil, numericalEntryForm)
+			entryWindow.SetContent(numericalContent)
 			entryWindow.Show()
 		}
 	})
 	selectWidget.PlaceHolder = "Choose an option"
 
-	content := container.NewVBox(
+	form := container.NewVBox(
 		container.NewCenter(headerLabel),
 		selectWidget,
 	)
+	content := container.NewBorder(nil, nil, nil, nil, form)
 	entryWindow.SetContent(content)
 	entryWindow.Show()
-	numAttribute := NewNumericalAttribute("Intelligence", 15)
-	csh.numericalAttributes = append(csh.numericalAttributes, *numAttribute)
+	// numAttribute := NewNumericalAttribute("Intelligence", 15)
+	// csh.numericalAttributes = append(csh.numericalAttributes, *numAttribute)
 	csh.RefreshMainContent()
 }
 
