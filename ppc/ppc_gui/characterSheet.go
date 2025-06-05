@@ -1,7 +1,7 @@
 package ppc_gui
 
 import (
-	ppcgui "ppc_wizard/ppc/ppc_gui/fieldEntries"
+	ppcgui "ppc_wizard/ppc/ppc_gui/fieldEntries/numericField"
 	"strconv"
 
 	"fyne.io/fyne/v2"

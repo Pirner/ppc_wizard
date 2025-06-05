@@ -1,4 +1,4 @@
-package ppc_gui
+package numericField
 
 import (
 	"fyne.io/fyne/v2"

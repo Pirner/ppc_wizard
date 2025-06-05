@@ -1,10 +1,11 @@
-package ppc_gui
+package numericField
 
 import (
+	"strconv"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/driver/mobile"
 	"fyne.io/fyne/v2/widget"
-	"strconv"
 )
 
 type NumericalEntry struct {
