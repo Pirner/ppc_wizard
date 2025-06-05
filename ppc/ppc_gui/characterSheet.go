@@ -14,7 +14,7 @@ type CharacterSheet struct {
 	mainApp               fyne.App
 	mainContainer         *fyne.Container
 	addNewAttributeButton *widget.Button
-	numericalAttributes   []NumericalAttribute
+	numericalAttributes   []*NumericalAttribute
 }
 
 func NewCharacterSheet(mainContainer *fyne.Container, a fyne.App) CharacterSheet {
@@ -22,7 +22,7 @@ func NewCharacterSheet(mainContainer *fyne.Container, a fyne.App) CharacterSheet
 		// Handle Home action
 		println("Add Attribute")
 	})
-	var numericAttributes []NumericalAttribute
+	var numericAttributes []*NumericalAttribute
 	csh := CharacterSheet{
 		a,
 		mainContainer,
@@ -59,7 +59,7 @@ func (csh CharacterSheet) AddField() {
 					entryContent.NameEntry.Text,
 					val,
 				)
-				csh.numericalAttributes = append(csh.numericalAttributes, *numAttribute)
+				csh.numericalAttributes = append(csh.numericalAttributes, numAttribute)
 				csh.RefreshMainContent()
 				entryWindow.Close()
 				println("Approve")
@@ -93,7 +93,23 @@ func (csh CharacterSheet) AddField() {
 	csh.RefreshMainContent()
 }
 
+func RemoveFlaggedFields(csh *CharacterSheet) {
+	println("Remove Flagged Fields")
+	var removeIndices []int
+	for i, nA := range csh.numericalAttributes {
+		if nA.RemoveFlag {
+			removeIndices = append(removeIndices, i)
+		}
+	}
+
+	for _, nB := range removeIndices {
+		// csh.numericalAttributes = slices.Delete(csh.numericalAttributes, nB, nB+1)
+		csh.numericalAttributes = append(csh.numericalAttributes[:nB], csh.numericalAttributes[nB+1:]...)
+	}
+}
+
 func (csh CharacterSheet) RefreshMainContent() {
+	RemoveFlaggedFields(&csh)
 	// Create the field container once
 	fieldsContainer := csh.CreateContainer()
 
@@ -121,7 +137,7 @@ func (csh CharacterSheet) CreateContainer() *fyne.Container {
 	var numAtts []fyne.CanvasObject
 	for i, nA := range csh.numericalAttributes {
 		println(i)
-		numAtts = append(numAtts, nA.CreateContainer())
+		numAtts = append(numAtts, nA.CreateContainer(csh))
 	}
 	numAttsContainer := container.NewVBox(numAtts...)
 

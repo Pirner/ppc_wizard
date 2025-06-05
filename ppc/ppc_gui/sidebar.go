@@ -1,12 +1,13 @@
 package ppc_gui
 
 import (
+	"image/color"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"image/color"
 )
 
 type Sidebar struct {
@@ -15,7 +16,7 @@ type Sidebar struct {
 	openBtn     *widget.Button
 	saveBtn     *widget.Button
 	mainContent *fyne.Container
-	activeCSH   *CharacterSheet
+	activeCSH   CharacterSheet
 }
 
 func (sb *Sidebar) CreateContainer() *fyne.Container {
@@ -79,7 +80,7 @@ func NewSidebar(mainContent *fyne.Container, activeCSH CharacterSheet, a fyne.Ap
 		openBtn,
 		saveBtn,
 		mainContent,
-		&activeCSH,
+		activeCSH,
 	}
 	return &sidebar
 }

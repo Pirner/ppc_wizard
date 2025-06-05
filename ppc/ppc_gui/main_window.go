@@ -1,15 +1,16 @@
 package ppc_gui
 
 import (
+	"image/color"
+	"io/ioutil"
+	"path/filepath"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
-	"image/color"
-	"io/ioutil"
-	"path/filepath"
 )
 
 type PPWizard struct {
@@ -70,17 +71,17 @@ func NewHomeContent() *fyne.Container {
 	introductionLabel.Wrapping = fyne.TextWrapWord
 	introductionLabel.Alignment = fyne.TextAlignCenter
 
-	sampleAttribute := NewNumericalAttribute("Intelligence", 14)
-	sampleAttribute2 := NewNumericalAttribute("Stamina", 12)
-	sampleAttribute3 := NewNumericalAttribute("Charisma", 12)
+	// sampleAttribute := NewNumericalAttribute("Intelligence", 14)
+	// sampleAttribute2 := NewNumericalAttribute("Stamina", 12)
+	// sampleAttribute3 := NewNumericalAttribute("Charisma", 12)
 
 	homeContent := container.NewVBox(
 		homeHeaderContent,
 		widget.NewSeparator(),
 		introductionLabel,
-		sampleAttribute.CreateContainer(),
-		sampleAttribute2.CreateContainer(),
-		sampleAttribute3.CreateContainer(),
+		// sampleAttribute.CreateContainer(),
+		// sampleAttribute2.CreateContainer(nil),
+		// sampleAttribute3.CreateContainer(nil),
 	)
 	// content := container.NewCenter(mainContent)
 	return homeContent
